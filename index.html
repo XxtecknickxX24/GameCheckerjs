@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Completion Checker</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f5dc, #d2b48c);
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #8b4513;
+            text-shadow: 2px 2px #d2b48c;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"], button {
+            font-size: 1em;
+            padding: 10px;
+            background-color: #ffffff;
+            color: #8b4513;
+            border: 2px solid #8b4513;
+            border-radius: 8px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #8b4513;
+            color: #ffffff;
+        }
+
+        .results {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #8b4513;
+        }
+
+        .scrollable-table {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border: 2px solid #8b4513;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 20px;
+            text-align: center;
+            border: 1px solid #8b4513;
+        }
+
+        th {
+            background-color: #d2b48c;
+            color: #8b4513;
+        }
+
+        td {
+            background-color: #ffffff;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f5f5dc;
+        }
+
+        tr:hover {
+            background-color: #d2b48c;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 10px;
+            background-color: #8b4513;
+            color: #ffffff;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Game Completion Checker</h1>
+        <h2>Check if a player has reached the final level in a game (Level 9)</h2>
+        <div class="input-group">
+            <input type="file" id="csvFile" accept=".csv">
+            <button onclick="filterParticipants()">Display</button>
+        </div>
+        <div id="results" class="results"></div>
+    </div>
+
+    <footer>
+        &copy; 2025 Sam Janell Jalipa. All rights reserved.
+    </footer>
+
+    <script>
+        let csvData = [];
+        let columns = [];
+
+        document.getElementById('csvFile').addEventListener('change', handleFileSelect, false);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const text = e.target.result;
+                parseCSV(text);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSV(data) {
+            const rows = data.split("\n").map(row => row.split(","));
+            columns = rows[0];  // Get header row
+            csvData = rows.slice(1); // Get data rows
+        }
+
+        function filterParticipants() {
+            const playerIdIndex = columns.indexOf("Player ID");
+            const gameIdIndex = columns.indexOf("Game ID");
+            const levelIndex = columns.indexOf("Level");
+            const timeplayedIndex = columns.indexOf("Time Played");
+            const scoreIndex = columns.indexOf("Score");
+            const livesremainingIndex = columns.indexOf("Lives Remaining");
+            const characterIndex = columns.indexOf("Character");
+            const ingamecurrencyIndex = columns.indexOf("In Game Currency");
+            const itemscollectedIndex = columns.indexOf("Items Collected");
+            const gameactionIndex = columns.indexOf("Game Action");
+
+            if (playerIdIndex === -1 || gameIdIndex === -1 || levelIndex === -1 || timeplayedIndex === -1 || scoreIndex === -1 || livesremainingIndex === -1 || characterIndex === -1 || ingamecurrencyIndex === -1|| itemscollectedIndex === -1|| gameactionIndex === -1) {
+                alert("Required columns not found in the CSV file.");
+                return;
+            }
+
+            const results = csvData
+                .filter(row => parseInt(row[levelIndex]) === 9)
+                .map(row => ({
+                    playerId: row[playerIdIndex] || "N/A",
+                    gameId: row[gameIdIndex] || "N/A"
+                    level: row[levelIndex] || "N/A",
+                    timeplayed: row[timeplayedIndex] || "N/A"
+                    score: row[scoreIndex] || "N/A",
+                    livesremaining: row[livesremainingIndex] || "N/A"
+                    character: row[characterIndex] || "N/A",
+                    ingamecurrency: row[ingamecurrencyIndex] || "N/A"
+                    itemscollected: row[itemscollectedIndex] || "N/A",
+                    gameaction: row[gameactionIndex] || "N/A"
+                }));
+
+            displayResults(results);
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            let resultsHTML = `
+                <div class="scrollable-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Player ID</th>
+                                <th>Game ID</th>
+                                <th>Level</th>
+                                <th>Time Played</th>
+                                <th>Score</th>
+                                <th>Lives Remaining</th>
+                                <th>Character</th>
+                                <th>In Game Currrency</th>
+                                <th>Items Collected</th>
+                                <th>Game Action/th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            results.forEach(row => {
+                if (row.playerId !== "N/A" && row.gameId !== "N/A" && row.level !== "N/A" && row.timeplayed !== "N/A" && row.score !== "N/A" && row.livesremaining !== "N/A" && row.character !== "N/A" && row.ingamecurrency !== "N/A" && row.itemscollected !== "N/A" && row.gameaction !== "N/A") {
+                    resultsHTML += `
+                        <tr>
+                            <td>${row.playerId}</td>
+                            <td>${row.gameId}</td>
+                            <td>${row.level}</td>
+                            <td>${row.timeplayed}</td>
+                            <td>${row.score}</td>
+                            <td>${row.livesremaining}</td>
+                            <td>${row.character}</td>
+                            <td>${row.ingamecurrency}</td>
+                            <td>${row.itemscollected}</td>
+                            <td>${row.gameaction}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            resultsHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = resultsHTML;
+        }
+    </script>
+</body>
+</html>
