@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -159,15 +160,8 @@
             const playerIdIndex = columns.indexOf("Player ID");
             const gameIdIndex = columns.indexOf("Game ID");
             const levelIndex = columns.indexOf("Level");
-            const timeplayedIndex = columns.indexOf("Time Played");
-            const scoreIndex = columns.indexOf("Score");
-            const livesremainingIndex = columns.indexOf("Lives Remaining");
-            const characterIndex = columns.indexOf("Character");
-            const ingamecurrencyIndex = columns.indexOf("In Game Currency");
-            const itemscollectedIndex = columns.indexOf("Items Collected");
-            const gameactionIndex = columns.indexOf("Game Action");
 
-            if (playerIdIndex === -1 || gameIdIndex === -1 || levelIndex === -1 || timeplayedIndex === -1 || scoreIndex === -1 || livesremainingIndex === -1 || characterIndex === -1 || ingamecurrencyIndex === -1|| itemscollectedIndex === -1|| gameactionIndex === -1) {
+            if (playerIdIndex === -1 || gameIdIndex === -1 || levelIndex === -1) {
                 alert("Required columns not found in the CSV file.");
                 return;
             }
@@ -177,14 +171,6 @@
                 .map(row => ({
                     playerId: row[playerIdIndex] || "N/A",
                     gameId: row[gameIdIndex] || "N/A"
-                    level: row[levelIndex] || "N/A",
-                    timeplayed: row[timeplayedIndex] || "N/A"
-                    score: row[scoreIndex] || "N/A",
-                    livesremaining: row[livesremainingIndex] || "N/A"
-                    character: row[characterIndex] || "N/A",
-                    ingamecurrency: row[ingamecurrencyIndex] || "N/A"
-                    itemscollected: row[itemscollectedIndex] || "N/A",
-                    gameaction: row[gameactionIndex] || "N/A"
                 }));
 
             displayResults(results);
@@ -199,33 +185,17 @@
                             <tr>
                                 <th>Player ID</th>
                                 <th>Game ID</th>
-                                <th>Level</th>
-                                <th>Time Played</th>
-                                <th>Score</th>
-                                <th>Lives Remaining</th>
-                                <th>Character</th>
-                                <th>In Game Currrency</th>
-                                <th>Items Collected</th>
-                                <th>Game Action/th>
                             </tr>
                         </thead>
                         <tbody>
             `;
 
             results.forEach(row => {
-                if (row.playerId !== "N/A" && row.gameId !== "N/A" && row.level !== "N/A" && row.timeplayed !== "N/A" && row.score !== "N/A" && row.livesremaining !== "N/A" && row.character !== "N/A" && row.ingamecurrency !== "N/A" && row.itemscollected !== "N/A" && row.gameaction !== "N/A") {
+                if (row.playerId !== "N/A" && row.gameId !== "N/A") {
                     resultsHTML += `
                         <tr>
                             <td>${row.playerId}</td>
                             <td>${row.gameId}</td>
-                            <td>${row.level}</td>
-                            <td>${row.timeplayed}</td>
-                            <td>${row.score}</td>
-                            <td>${row.livesremaining}</td>
-                            <td>${row.character}</td>
-                            <td>${row.ingamecurrency}</td>
-                            <td>${row.itemscollected}</td>
-                            <td>${row.gameaction}</td>
                         </tr>
                     `;
                 }
